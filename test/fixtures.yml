@@ -353,3 +353,8 @@ merchant_esolutions:
   login: "profile_id"
   password: "profile_key"
   
+ultimatepay_ugc:
+  merchant_code: UC04
+  password: adminpwd here
+  secret_phrase: secret phrase here
+  valid_pin: valid pin here
