@@ -4,6 +4,7 @@ class UltimatepayUgcTest < Test::Unit::TestCase
   def setup
     @gateway = UltimatepayUgcGateway.new(
                  :merchant_code => 'UC04',
+                 :login => 'login',
                  :password => 'password',
                  :secret_phrase => '5ebe2294ecd0e0f08eab7690d2a6ee69'
                )
@@ -14,6 +15,12 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     }
     @amount = 1.00
     
+  end
+  
+  def test_valid_login?
+    assert !@gateway.valid_login?('login', 'wrong')
+    assert !@gateway.valid_login('wrong', 'password')
+    assert @gateway.valid_login('login', 'password')
   end
   
   def test_successful_purchase

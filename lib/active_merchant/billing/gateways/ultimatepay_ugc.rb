@@ -14,7 +14,7 @@ module ActiveMerchant #:nodoc:
       self.display_name = 'Ultimatepay UGC Gateway'
       
       def initialize(options = {})
-        requires!(options, :merchant_code, :password, :secret_phrase)
+        requires!(options, :merchant_code, :password, :secret_phrase, :login)
         @options = options
         super
       end 
@@ -27,6 +27,10 @@ module ActiveMerchant #:nodoc:
         add_hash(post)
 
         commit(post)
+      end
+
+      def valid_login?(login, password)
+        @options[:login] == login && @options[:password] == password
       end
 
       private

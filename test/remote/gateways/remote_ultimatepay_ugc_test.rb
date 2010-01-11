@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class RemoteUltimatepayUgcTest < Test::Unit::TestCase
-  
-
   def setup
     @gateway = UltimatepayUgcGateway.new(fixtures(:ultimatepay_ugc))
     
