@@ -46,7 +46,9 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
   end
 
   def test_valid_hash?
-    flunk
+    assert @ultimatepay_ugc.valid_hash?, "Should be valid hash"
+    
+    assert !UltimatepayUgc::Notification.new('', :gateway => @gateway).valid_hash?, "Hash should be invalid"
   end
   
   def test_valid_login?
@@ -101,16 +103,8 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
       "pkgid"       => "none"
     }
 
-    hash = Digest::MD5.hexdigest(s = [
-      params['userid'],
-      params['adminpwd'],
-      fixture_hash[:secret_phrase],
-      params['pkgid'],
-      params['currency'],
-      params['amount'],
-      params['paymentid']
-    ].join)
-
+    hash = UltimatepayUgc::Notification.new('', :gateway => @gateway).generate_hash_from_request(params)
+    
     params["hash"] = hash
     params
   end

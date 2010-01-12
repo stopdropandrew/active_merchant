@@ -33,6 +33,10 @@ module ActiveMerchant #:nodoc:
         @options[:login] == login && @options[:password] == password
       end
 
+      def secret_phrase
+        @options[:secret_phrase]
+      end
+
       private
       
       def add_boilerplate_info(post, money)

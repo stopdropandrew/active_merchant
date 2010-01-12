@@ -354,8 +354,8 @@ merchant_esolutions:
   password: "profile_key"
   
 ultimatepay_ugc:
-  merchant_code: KONG
-  login: 1QGY8zwcgd
-  password: X6VFgcJg30hXphdA
-  secret_phrase: nsJ7R2HPrPPcOH8sPM1jLcbuFFqMKg
+  merchant_code: merc
+  login: login
+  password: password
+  secret_phrase: secret
   valid_pin: valid_pin_here
