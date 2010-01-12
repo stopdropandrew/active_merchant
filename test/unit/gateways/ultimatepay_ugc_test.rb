@@ -15,6 +15,11 @@ class UltimatepayUgcTest < Test::Unit::TestCase
       :ugc_pin => '99999999999'
     }
     
+    @capture_options = {
+      :token => 'iONyv5B13mKRTNtuYHxvV6wUuHz8fZrt9uKcGW90dJx',
+      :ugc_pin => '99999999999'
+    }
+    
   end
   
   def test_valid_login?
@@ -46,6 +51,27 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     assert response.test?
   end
 
+  def test_successful_capture
+    @gateway.expects(:ssl_post).returns(successful_capture_response)
+    
+    assert response = @gateway.capture(@capture_options)
+    assert_instance_of Response, response
+    assert_success response
+    
+    # Replace with authorization number from the successful response
+    assert_equal 'BMhFnN4SohBrWODtHZn62GTAx3tm11SVWldvoE1Ulpc', response.authorization
+    assert response.test?
+  end
+
+  def test_unsuccessful_capture
+    @gateway.expects(:ssl_post).returns(failed_capture_response)
+    
+    assert response = @gateway.capture(@capture_options)
+    assert_instance_of Response, response
+    assert_failure response
+    assert response.test?
+  end
+
   private
   
   def successful_authorize_response
@@ -62,11 +88,11 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     'token=6h85pxerDfjwRMSmIAae3lXLXbkE87xjZxy9ytE1bW&result=failed&errorDetail=ugc_pin'
   end
   
-  def succesful_commit_response
-    "token=iONyv5B13mKRTNtuYHxvV6wUuHz8fZrt9uKcGW90dJx&result=paid"
+  def successful_capture_response
+    "token=BMhFnN4SohBrWODtHZn62GTAx3tm11SVWldvoE1Ulpc&result=paid"
   end
 
-  def failed_authorize_response
+  def failed_capture_response
     'token=6h85pxerDfjwRMSmIAae3lXLXbkE87xjZxy9ytE1bW&result=failed&errorDetail=ugc_pin'
   end
 end

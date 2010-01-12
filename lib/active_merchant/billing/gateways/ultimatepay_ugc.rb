@@ -5,6 +5,11 @@ module ActiveMerchant #:nodoc:
       TEST_URL = 'https://www.ultimatepay.com/app/api/live/'
       LIVE_URL = 'https://www.ultimatepay.com/app/api/live/'
       
+      AUTHORIZE_METHOD = 'StartOrderDirect'
+      AUTHORIZE_SUCCESS = 'auth'
+      CAPTURE_METHOD = 'Commit'
+      CAPTURE_SUCCESS = 'paid'
+      
       self.default_currency = 'USD'
       
       # The homepage URL of the gateway
@@ -22,11 +27,19 @@ module ActiveMerchant #:nodoc:
       def authorize(options = {})
         post = {}
         add_boilerplate_info(post, options)
-        add_ugc_pin(post, options)
         add_customer_data(post, options)
         add_hash(post)
-
-        commit(post)
+        add_currency(post, options)
+        
+        commit(AUTHORIZE_METHOD, post)
+      end
+      
+      def capture(options = {})
+        post = {}
+        add_boilerplate_info(post, options)
+        add_token(post, options)
+        
+        commit(CAPTURE_METHOD, post)
       end
 
       def valid_login?(login, password)
@@ -40,15 +53,17 @@ module ActiveMerchant #:nodoc:
       private
       
       def add_boilerplate_info(post, options)
-        post[:currency] = options[:currency] || self.class.default_currency
-
         post[:sn] = @options[:merchant_code]
         post[:paymentid] = 'UG'
-        post[:method] = 'StartOrderDirect'
-      end
-      
-      def add_ugc_pin(post, options)
         post[:ugc_pin] = options[:ugc_pin]
+      end
+
+      def add_token(post, options)
+        post[:token] = options[:token]
+      end
+
+      def add_currency(post, options)
+        post[:currency] = options[:currency] || self.class.default_currency
       end
       
       def add_customer_data(post, options)
@@ -67,12 +82,16 @@ module ActiveMerchant #:nodoc:
         post[:hash] = hash
       end
       
-      def commit(parameters)
-        response = parse( ssl_post(gateway_url, post_data(parameters) ) )
+      def commit(method, parameters)
+        parameters[:method] = method
         
-        success = case parameters[:method]
-        when 'StartOrderDirect'
-          response['result'] == 'auth'
+        response = parse( ssl_post(gateway_url, post_data(parameters) ) )
+
+        success = case method
+        when AUTHORIZE_METHOD
+          response['result'] == AUTHORIZE_SUCCESS
+        when CAPTURE_METHOD
+          response['result'] == CAPTURE_SUCCESS
         end
         
         Response.new(success, message_from(response['errorDetail']), response, 
