@@ -28,8 +28,8 @@ module ActiveMerchant #:nodoc:
         post = {}
         add_boilerplate_info(post, options)
         add_customer_data(post, options)
-        add_hash(post)
         add_currency(post, options)
+        add_hash(post)
         
         commit(AUTHORIZE_METHOD, post)
       end
@@ -116,6 +116,8 @@ module ActiveMerchant #:nodoc:
         case response
         when 'ugc_pin'
           'Invalid pin'
+        when 'token'
+          'Invalid token'
         end
       end
       
