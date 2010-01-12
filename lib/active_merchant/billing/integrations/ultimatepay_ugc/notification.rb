@@ -27,6 +27,7 @@ module ActiveMerchant::Billing::Integrations
       def valid?
         valid_login? && valid_hash? && valid_commtype?
       end
+      alias acknowledge valid
 
       def valid_commtype?
         "PAYMENT" == params['commtype']
