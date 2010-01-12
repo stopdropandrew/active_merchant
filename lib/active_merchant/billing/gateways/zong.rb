@@ -3,7 +3,7 @@ module ActiveMerchant #:nodoc:
     # The Zong Gateway is only used for Process Entrypoint lookup calls
     # This API call returns iframe urls for each price point
     class ZongGateway < Gateway
-      URL = 'https://pay01.zong.com/zongpay/actions/default?method=lookup'
+      URL = 'https://pay01.zong.com/zongpay/actions/default'
       ZONG_NAMESPACES = { 'xmlns' => 'http://pay01.zong.com/zongpay',
                           'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
                           'xmlns:schemaLocation' => 'http://pay01.zong.com/zongpay/zongpay.xsd'
@@ -38,14 +38,17 @@ module ActiveMerchant #:nodoc:
       #       :entry_point_url = the iframe entry point url
       def lookup_price_points(options)
         requires!(options, :country_code, :currency)
-        response = parse(ssl_post(URL, build_process_entrypoint_request(options)))
+        
+        post = { :method => 'lookup'}
+        add_lookup_xml(post, options)
+        response = parse(ssl_post(URL, post_data(post)))
         
         Response.new(!!response[:items], nil, response)
       end
           
       private                       
       
-      def build_process_entrypoint_request(options)
+      def add_lookup_xml(post, options)
         xml = Builder::XmlMarkup.new :indent => 2
         xml.tag! 'requestMobilePaymentProcessEntrypoints', ZONG_NAMESPACES do
           xml.tag! 'customerKey', customer_key 
@@ -53,11 +56,15 @@ module ActiveMerchant #:nodoc:
           xml.tag! 'items', :currency => options[:currency]
         end
 
-        xml.target!
+        post[:request] = xml.target!.to_s
       end
       
       def customer_key
         @options[:customer_key]
+      end
+
+      def post_data(paramaters = {})
+        paramaters.map{ |k, v| "#{k}=#{CGI.escape(v.to_s)}"}.join("&")
       end
 
       def parse(xml)
