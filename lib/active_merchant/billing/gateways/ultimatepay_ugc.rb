@@ -19,9 +19,9 @@ module ActiveMerchant #:nodoc:
         super
       end 
       
-      def purchase(money, options = {})
+      def authorize(options = {})
         post = {}
-        add_boilerplate_info(post, money)
+        add_boilerplate_info(post, options)
         add_ugc_pin(post, options)
         add_customer_data(post, options)
         add_hash(post)
@@ -39,11 +39,10 @@ module ActiveMerchant #:nodoc:
 
       private
       
-      def add_boilerplate_info(post, money)
-        post[:amount] = money
-        post[:currency] = currency(money)
+      def add_boilerplate_info(post, options)
+        post[:currency] = options[:currency] || self.class.default_currency
 
-        post[:sn] = options[:merchant_code]
+        post[:sn] = @options[:merchant_code]
         post[:paymentid] = 'UG'
         post[:method] = 'StartOrderDirect'
       end
@@ -71,8 +70,13 @@ module ActiveMerchant #:nodoc:
       def commit(parameters)
         response = parse( ssl_post(gateway_url, post_data(parameters) ) )
         
-        Response.new(response["result"] == "paid", message_from(response['errorDetail']), response, 
-          :authorization => response["pbctrans"],
+        success = case parameters[:method]
+        when 'StartOrderDirect'
+          response['result'] == 'auth'
+        end
+        
+        Response.new(success, message_from(response['errorDetail']), response, 
+          :authorization => response["token"],
           :test => test?
         )
       end
@@ -83,6 +87,8 @@ module ActiveMerchant #:nodoc:
           key,val = pair.split('=')
           results[key] = val
         end
+        
+        results['value'] = results['value'].to_f if results['value']
         
         results
       end     
