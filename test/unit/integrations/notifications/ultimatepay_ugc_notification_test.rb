@@ -58,10 +58,13 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
 
   def test_accessors
     assert_equal 1, @ultimatepay_ugc.user_id
-    assert_equal "%7Ba75aea26-5dfc-42dd-aac5-cbed1531050c%7D", @ultimatepay_ugc.transaction_id
+    assert_equal '123abc', @ultimatepay_ugc.merchtrans
+    assert_equal "%7Ba75aea26-5dfc-42dd-aac5-cbed1531050c%7D", @ultimatepay_ugc.pbctrans
     assert_equal 'shredmasterfresh', @ultimatepay_ugc.username
-    assert_equal 5, @ultimatepay_ugc.amount
+    assert_equal 5, @ultimatepay_ugc.user_dollar_amount
+    assert_equal 4, @ultimatepay_ugc.merchant_dollar_amount
     assert_equal "USD", @ultimatepay_ugc.currency
+    assert_equal '20100106180300', @ultimatepay_ugc.dtdatetime
     assert_equal Time.parse("1/6/2010 18:03:00"), @ultimatepay_ugc.received_at
   end
 
@@ -96,7 +99,7 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
       "set_amount"  => "4.00",
       "sepamount"   => "5.00", 
       "amount"      => "0.00", 
-      "merchtrans"  => nil, 
+      "merchtrans"  => '123abc', 
       "dtdatetime"  => "20100106180300", 
       "rescode"     => nil, 
       "livemode"    => nil, 

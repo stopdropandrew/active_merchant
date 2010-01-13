@@ -45,12 +45,15 @@ module ActiveMerchant::Billing::Integrations
         gateway.options[:login] == params['login'] && gateway.options[:password] == params['adminpwd']
       end
 
-
       def user_id
         params['userid'].to_i
       end
 
-      def transaction_id
+      def merchtrans
+        params['merchtrans']
+      end
+
+      def pbctrans
         params['pbctrans']
       end
 
@@ -58,12 +61,20 @@ module ActiveMerchant::Billing::Integrations
         params['accountname']
       end
 
-      def amount
+      def merchant_dollar_amount
+        params['set_amount'].to_f
+      end
+
+      def user_dollar_amount
         params['sepamount'].to_f
       end
 
       def currency
         params['currency']
+      end
+
+      def dtdatetime
+        params['dtdatetime']
       end
 
       def received_at
