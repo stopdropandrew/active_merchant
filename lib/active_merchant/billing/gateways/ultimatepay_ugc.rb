@@ -44,14 +44,6 @@ module ActiveMerchant #:nodoc:
         commit(CAPTURE_METHOD, post)
       end
 
-      def valid_login?(login, password)
-        @options[:login] == login && @options[:password] == password
-      end
-
-      def secret_phrase
-        @options[:secret_phrase]
-      end
-
       private
       
       def add_boilerplate_info(post, options)

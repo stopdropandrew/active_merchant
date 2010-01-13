@@ -4,7 +4,6 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
   include ActiveMerchant::Billing::Integrations
 
   def setup
-    
     @gateway = UltimatepayUgcGateway.new(fixtures(:ultimatepay_ugc))
     @ultimatepay_ugc = UltimatepayUgc::Notification.new(http_raw_data, :gateway => @gateway)
   end

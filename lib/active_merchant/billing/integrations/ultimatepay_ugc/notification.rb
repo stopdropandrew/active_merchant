@@ -24,6 +24,10 @@ module ActiveMerchant::Billing::Integrations
         end
       end
 
+      def gateway
+        @options[:gateway]
+      end
+
       def valid?
         valid_login? && valid_hash? && valid_commtype?
       end
@@ -38,8 +42,9 @@ module ActiveMerchant::Billing::Integrations
       end
 
       def valid_login?
-        @options[:gateway].valid_login?(params['login'], params['adminpwd'])
+        gateway.options[:login] == params['login'] && gateway.options[:password] == params['adminpwd']
       end
+
 
       def user_id
         params['userid'].to_i
@@ -79,7 +84,7 @@ module ActiveMerchant::Billing::Integrations
           request['dtdatetime'],
           request['login'],
           request['adminpwd'],
-          @options[:gateway].secret_phrase,
+          gateway.options[:secret_phrase],
           request['userid'],
           request['commtype'],
           request['set_amount'],
