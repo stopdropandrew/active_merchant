@@ -66,6 +66,12 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
     assert_equal Time.parse("1/6/2010 18:03:00"), @ultimatepay_ugc.received_at
   end
 
+  def test_can_override_response_fail
+    response = parse_response(@ultimatepay_ugc.response('Transaction not found'))
+    assert_equal '[ERROR]', response[:result]
+    assert_equal 'Transaction not found', response[:reason]
+  end
+
   private
   def parse_response(response)
     response_array = response.split('|')

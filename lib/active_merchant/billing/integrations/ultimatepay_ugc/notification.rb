@@ -3,12 +3,12 @@ require 'net/http'
 module ActiveMerchant::Billing::Integrations
   module UltimatepayUgc
     class Notification < ActiveMerchant::Billing::Integrations::Notification
-      def response
+      def response(fail_reason = nil)
         [
-          valid? ? '[OK]' : '[ERROR]',
+          (valid? && !fail_reason) ? '[OK]' : '[ERROR]',
           Time.now.strftime('%Y%m%d%H%M%S'),
           '',
-          reponse_text
+          fail_reason || reponse_text
         ].join('|')
       end
 
