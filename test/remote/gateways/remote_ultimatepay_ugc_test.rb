@@ -4,8 +4,6 @@ class RemoteUltimatepayUgcTest < Test::Unit::TestCase
   def setup
     @gateway = UltimatepayUgcGateway.new(fixtures(:ultimatepay_ugc))
     
-    @amount = 1.00
-
     options = {
       :user_id => 1,
     }

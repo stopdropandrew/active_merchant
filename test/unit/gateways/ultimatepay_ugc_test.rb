@@ -12,7 +12,8 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     @authorize_options = {
       :user_id => 1,
       :username => 'shredmasterfresh',
-      :ugc_pin => '99999999999'
+      :ugc_pin => '99999999999',
+      :merchtrans => 'asdf123'
     }
     
     @capture_options = {

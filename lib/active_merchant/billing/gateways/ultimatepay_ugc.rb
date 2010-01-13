@@ -25,6 +25,7 @@ module ActiveMerchant #:nodoc:
       end 
       
       def authorize(options = {})
+        requires!(options, :user_id, :username, :ugc_pin, :merchtrans)
         post = {}
         add_boilerplate_info(post, options)
         add_customer_data(post, options)
@@ -35,6 +36,7 @@ module ActiveMerchant #:nodoc:
       end
       
       def capture(options = {})
+        requires!(options, :token, :ugc_pin)
         post = {}
         add_boilerplate_info(post, options)
         add_token(post, options)
@@ -68,6 +70,7 @@ module ActiveMerchant #:nodoc:
       
       def add_customer_data(post, options)
         post[:userid] = options[:user_id]
+        post[:accountname] = options[:username]
       end
       
       def add_hash(post)
@@ -75,9 +78,14 @@ module ActiveMerchant #:nodoc:
           post[:userid],
           @options[:password],
           @options[:secret_phrase],
+          post[:pkgid],
           post[:currency],
           post[:amount],
-          post[:paymentid]
+          post[:paymentid],
+          post[:merchtrans],
+          post[:riskmode],
+          post[:developerid],
+          post[:appid]
         ].join)
         post[:hash] = hash
       end
@@ -110,7 +118,7 @@ module ActiveMerchant #:nodoc:
         results['value'] = results['value'].to_f if results['value']
         
         results
-      end     
+      end
       
       def message_from(response)
         case response
