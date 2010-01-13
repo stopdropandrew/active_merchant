@@ -89,11 +89,11 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
     params = {
       "login"       => fixture_hash[:login], 
       "adminpwd"    => fixture_hash[:password], 
+      "sn"          => fixture_hash[:merchant_code], 
       "userid"      => "1", 
       "accountname" => "shredmasterfresh", 
       "pbctrans"    => "%7Ba75aea26-5dfc-42dd-aac5-cbed1531050c%7D", 
       "paymentid"   => "UG", 
-      "sn"          => "KONG", 
       "set_amount"  => "4.00",
       "sepamount"   => "5.00", 
       "amount"      => "0.00", 

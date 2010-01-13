@@ -1,6 +1,12 @@
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class BogusUltimatepayUgcGateway < Gateway
+      def initialize(options = {})
+        requires!(options, :merchant_code, :password, :secret_phrase, :login)
+        @options = options
+        super
+      end 
+      
       def authorize(options = {})
         case options[:ugc_pin]
         when '9999'
