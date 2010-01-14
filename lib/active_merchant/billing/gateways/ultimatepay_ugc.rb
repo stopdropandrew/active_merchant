@@ -28,6 +28,7 @@ module ActiveMerchant #:nodoc:
         requires!(options, :user_id, :username, :ugc_pin, :merchtrans)
         post = {}
         add_boilerplate_info(post, options)
+        add_merchtrans(post, options)
         add_customer_data(post, options)
         add_currency(post, options)
         add_hash(post)
@@ -50,6 +51,10 @@ module ActiveMerchant #:nodoc:
         post[:sn] = @options[:merchant_code]
         post[:paymentid] = 'UG'
         post[:ugc_pin] = options[:ugc_pin]
+      end
+
+      def add_merchtrans(post, options)
+        post[:merchtrans] = options[:merchtrans]
       end
 
       def add_token(post, options)

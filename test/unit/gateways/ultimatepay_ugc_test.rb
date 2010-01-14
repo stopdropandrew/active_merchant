@@ -23,12 +23,6 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     
   end
   
-  def test_valid_login?
-    assert !@gateway.valid_login?('login', 'wrong')
-    assert !@gateway.valid_login?('wrong', 'password')
-    assert @gateway.valid_login?('login', 'password')
-  end
-  
   def test_successful_authorize
     @gateway.expects(:ssl_post).returns(successful_authorize_response)
     
