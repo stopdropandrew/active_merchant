@@ -8,12 +8,12 @@ module ActiveMerchant #:nodoc:
       module Zong
         class Notification < ActiveMerchant::Billing::Integrations::Notification
           ZONG_PUBLIC_KEY = <<-END_KEY
-          -----BEGIN PUBLIC KEY-----
-          MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt8WGFD2HH1sHbdtrZ0MspHueV
-          Db2vjk2G11qLoxZiTehfRTmlKivFMkdC/4PMtF73Z4kjHDr+7lU9b4DmkcNyZ03D
-          srRtudY9cGWh0cYCCsODjScjSCKpfTPUj/3Rxe6hcqhfIWw3XuduaALBnT31NR49
-          9Qodp859RnBpuwSieQIDAQAB
-          -----END PUBLIC KEY-----    
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt8WGFD2HH1sHbdtrZ0MspHueV
+Db2vjk2G11qLoxZiTehfRTmlKivFMkdC/4PMtF73Z4kjHDr+7lU9b4DmkcNyZ03D
+srRtudY9cGWh0cYCCsODjScjSCKpfTPUj/3Rxe6hcqhfIWw3XuduaALBnT31NR49
+9Qodp859RnBpuwSieQIDAQAB
+-----END PUBLIC KEY-----
           END_KEY
 
           def transaction_ref
@@ -88,8 +88,8 @@ module ActiveMerchant #:nodoc:
           end
 
           # response string to send to Zong
-          def response
-            valid_signature? ? "#{transaction_ref}:OK" : 'INVALID'
+          def response(fail_reason = nil)
+            (!fail_reason && acknowledge) ? "#{transaction_ref}:OK" : (fail_reason || 'INVALID')
           end
         end
       end
