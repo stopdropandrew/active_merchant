@@ -83,8 +83,10 @@ srRtudY9cGWh0cYCCsODjScjSCKpfTPUj/3Rxe6hcqhfIWw3XuduaALBnT31NR49
           alias acknowledge valid_signature?
 
           def signature_string
-            querystring = "?signature=&signatureVersion=1&"
-            querystring << params.to_a.reject{|a| a[0].match(/^signature/)}.sort_by(&:first).map{|key, value| "#{key}=#{CGI.escape(value.to_s)}"}.join("&")
+            query_params = params.clone
+            query_params['signature'] = ''
+            
+            '?' + query_params.to_a.sort_by(&:first).map{|key, value| "#{key}=#{CGI.escape(value.to_s)}"}.join("&")
           end
 
           # response string to send to Zong
