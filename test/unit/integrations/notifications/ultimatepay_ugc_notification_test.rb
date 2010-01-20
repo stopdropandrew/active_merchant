@@ -39,7 +39,10 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
   end
 
   def test_valid_commtype?
-    assert @ultimatepay_ugc.valid_commtype?
+    ['PAYMENT', 'ADMIN_REVERSAL', 'FORCED_REVERSAL'].each do |commtype|
+      ugc = UltimatepayUgc::Notification.new(http_raw_data(post_data(post_data_without_hash.merge('commtype' => commtype))), :gateway => @gateway)
+      assert ugc.valid_commtype?
+    end
     
     assert !UltimatepayUgc::Notification.new('').valid_commtype?
   end
@@ -85,7 +88,7 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
     }
   end
   
-  def post_data
+  def post_data_without_hash
     fixture_hash = fixtures(:ultimatepay_ugc)
     
     params = {
@@ -110,7 +113,9 @@ class UltimatepayUgcNotificationTest < Test::Unit::TestCase
       "mirror"      => nil, 
       "pkgid"       => "none"
     }
-
+  end
+  
+  def post_data(params = post_data_without_hash)
     hash = UltimatepayUgc::Notification.new('', :gateway => @gateway).generate_hash_from_request(params)
     
     params["hash"] = hash
