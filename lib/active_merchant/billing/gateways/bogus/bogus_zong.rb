@@ -12,23 +12,6 @@ module ActiveMerchant #:nodoc:
       def lookup_price_points(options = {})
         case options[:country_code]
         when 'US'
-          results = [
-            {
-              :working_price => 5.75, 
-              :out_payment => 3.01, 
-              :item_ref  => '5.7500_USD', 
-              :zong_plus_only => false, 
-              :entrypoint_url => 'http://www.zong.com?purchaseKey=1234'
-            },
-            {
-              :working_price => 8.75, 
-              :out_payment => 5.01, 
-              :item_ref  => '8.7500_USD', 
-              :zong_plus_only => false, 
-              :entrypoint_url => 'http://www.zong.com?purchaseKey=8888'
-            }
-          ]
-          
           Response.new(true, '', {:items => results }, :test => true )
         when 'IQ'
           Response.new(false, '', {:items => []}, :test => true )
@@ -36,7 +19,25 @@ module ActiveMerchant #:nodoc:
           Response.new(false, 'Invalid country', {}, :test => true )
         end
       end
-
+      
+      def results
+        [
+          {
+            :working_price => 5.75, 
+            :out_payment => 3.01, 
+            :item_ref  => '5.7500_USD', 
+            :zong_plus_only => false, 
+            :entrypoint_url => 'http://www.zong.com?purchaseKey=1234'
+          },
+          {
+            :working_price => 8.75, 
+            :out_payment => 5.01, 
+            :item_ref  => '8.7500_USD', 
+            :zong_plus_only => false, 
+            :entrypoint_url => 'http://www.zong.com?purchaseKey=8888'
+          }
+        ]
+      end
     end
   end
 end
