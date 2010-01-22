@@ -57,6 +57,14 @@ module ActiveMerchant::Billing::Integrations
         params['commtype']
       end
 
+      def forced_reversal?
+        commtype == 'FORCED_REVERSAL'
+      end
+      
+      def admin_reversal?
+        commtype == 'ADMIN_REVERSAL'
+      end
+      
       def pbctrans
         params['pbctrans']
       end
