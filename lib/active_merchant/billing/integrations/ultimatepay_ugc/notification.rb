@@ -34,7 +34,7 @@ module ActiveMerchant::Billing::Integrations
       alias acknowledge valid?
 
       def valid_commtype?
-        "PAYMENT" == params['commtype']
+        ["PAYMENT", "ADMIN_REVERSAL", "FORCED_REVERSAL"].include?(params['commtype'])
       end
 
       def valid_hash?
@@ -51,6 +51,10 @@ module ActiveMerchant::Billing::Integrations
 
       def merchtrans
         params['merchtrans']
+      end
+
+      def commtype
+        params['commtype']
       end
 
       def pbctrans
