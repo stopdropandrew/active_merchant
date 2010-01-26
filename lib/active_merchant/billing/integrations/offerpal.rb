@@ -8,6 +8,7 @@ module ActiveMerchant #:nodoc:
         IFRAME_URL = 'http://pub.myofferpal.com/<application_id>/showoffers.action?snuid=<user_id>'
 
         mattr_accessor :application_id
+        mattr_accessor :secret_key
 
         def self.iframe_url(user_id)
           raise "application_id must be set to generate an iframe url" if application_id.nil?
