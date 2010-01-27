@@ -17,10 +17,9 @@ module ActiveMerchant #:nodoc:
             params['snuid']
           end
           
-          def kreds_amount
+          def currency
             params['currency'].to_i
           end
-
 
           # Acknowledge the transaction to Offerpal. This method has to be called after a new 
           # apc arrives. Offerpal will verify that all the information we received are correct and will return a 
