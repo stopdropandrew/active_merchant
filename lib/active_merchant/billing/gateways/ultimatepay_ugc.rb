@@ -66,10 +66,6 @@ module ActiveMerchant #:nodoc:
         post[:amount] = options[:amount]
       end
       
-      def add_amount(post, options)
-        post[:amount] = options[:amount]
-      end
-      
       def add_customer_data(post, options)
         post[:userid] = options[:user_id]
         post[:accountname] = options[:username]
