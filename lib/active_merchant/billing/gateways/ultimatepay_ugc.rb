@@ -30,17 +30,17 @@ module ActiveMerchant #:nodoc:
         add_boilerplate_info(post, options)
         add_merchtrans(post, options)
         add_customer_data(post, options)
-        add_currency(post, options)
         add_hash(post)
         
         commit(AUTHORIZE_METHOD, post)
       end
       
       def capture(options = {})
-        requires!(options, :token, :ugc_pin)
+        requires!(options, :token, :ugc_pin, :currency, :amount)
         post = {}
         add_boilerplate_info(post, options)
         add_token(post, options)
+        add_amount(post, options)
         
         commit(CAPTURE_METHOD, post)
       end
@@ -61,8 +61,13 @@ module ActiveMerchant #:nodoc:
         post[:token] = options[:token]
       end
 
-      def add_currency(post, options)
-        post[:currency] = options[:currency] || self.class.default_currency
+      def add_amount(post, options)
+        post[:currency] = options[:currency]
+        post[:amount] = options[:amount]
+      end
+      
+      def add_amount(post, options)
+        post[:amount] = options[:amount]
       end
       
       def add_customer_data(post, options)

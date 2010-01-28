@@ -18,7 +18,9 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     
     @capture_options = {
       :token => 'iONyv5B13mKRTNtuYHxvV6wUuHz8fZrt9uKcGW90dJx',
-      :ugc_pin => '99999999999'
+      :ugc_pin => '99999999999',
+      :amount => 5,
+      :currency => 'USD'
     }
     
   end
