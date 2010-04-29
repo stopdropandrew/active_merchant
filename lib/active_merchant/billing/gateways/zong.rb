@@ -10,7 +10,7 @@ module ActiveMerchant #:nodoc:
                         }
       
       # The countries the gateway supports merchants from as 2 digit ISO country codes
-      self.supported_countries = %w{ US CA AT AU BE CH CL CO CZ DE DK ES FI FR GB HU IE MX NL NO PL PT RU SE TR ZA }
+      self.supported_countries = %w{ US CA AT AU BE CH CL CO CZ DE DK ES FI FR GB HU IE MX NL NO PL PT RU SE TR ZA AR VE NZ }
       
       # The card types supported by the payment gateway
       self.supported_cardtypes = []
