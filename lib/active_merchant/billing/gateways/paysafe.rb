@@ -5,8 +5,18 @@ module ActiveMerchant #:nodoc:
       BASE_URL = "https://shops.%s.at.paysafecard.com/pscmerchant/%s"
       OUTPUT_FORMAT = 'xml_v1'
       
+      # test action endpoints
       INITIALIZE_TEST_ACTION = 'InitializeMerchantTestDataServlet'
+
+      # real action endpoints
       AUTHORIZE_ACTION = "CreateDispositionServlet"
+      CHECK_TRANSACTION_ACTION = "GetDispositionStateServlet"
+      
+      # disposition statuses
+      DISPOSITION_CREATED = 'C'
+      DISPOSITION_DISPOSED = 'D'
+      DISPOSITION_EXPIRED = 'X'
+      
       
       def initialize(options = {})
         requires!(options, :merchant_id, :currency, :business_type, :pem, :pem_password)
@@ -29,8 +39,19 @@ module ActiveMerchant #:nodoc:
         post = {}
         add_boilerplate_info(post)
         add_transaction_data(post, options)
+        add_purchase_data(post, options)
         
         commit(AUTHORIZE_ACTION, post)
+      end
+      
+      def check_transaction_status(options = {})
+        requires!(options, :transaction_id)
+        post = {}
+        
+        add_boilerplate_info(post)
+        add_transaction_data(post, options)
+        
+        commit(CHECK_TRANSACTION_ACTION, post)
       end
       
       private
@@ -41,8 +62,11 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_transaction_data(post, options)
-        post[:currency] = @options[:currency]
         post[:mtid] = options[:transaction_id]
+      end
+      
+      def add_purchase_data(post, options)
+        post[:currency] = @options[:currency]
         post[:amount] = '%.2f' % options[:amount]
         post[:okurl] = options[:ok_url]
         post[:nokurl] = options[:nok_url]

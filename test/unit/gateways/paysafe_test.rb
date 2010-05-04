@@ -31,30 +31,16 @@ class PaysafeTest < Test::Unit::TestCase
     assert_equal 'The Transaction <testid, cool-trans> already exists.', response.message
   end
   
-  # def test_get_transaction_state
-  #   @gateway.expects(:ssl_post).returns(successful_authorize_response)
-  #   
-  #   assert response = @gateway.authorize(@options)
-  #   assert_instance_of Response, response
-  #   assert_success response
-  #   
-  # end
-  
-  # def test_successful_authorize
-  #   @gateway.expects(:ssl_post).returns(successful_authorize_response)
-  #   
-  #   assert response = @gateway.authorize(@authorize_options)
-  #   assert_instance_of Response, response
-  #   assert_success response
-  #   
-  #   # Replace with authorization number from the successful response
-  #   assert_equal 'BMhFnN4SohBrWODtHZn62GTAx3tm11SVWldvoE1Ulpc', response.authorization
-  #   assert_equal 5.0, response.params['value']
-  #   assert_equal 'USD', response.params['currency']
-  #   assert response.test?
-  # end
-  
-  
+  def test_get_transaction_state
+    @gateway.expects(:ssl_post).returns(successful_get_transaction_state_response)
+    
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_success response
+    
+    assert_equal PaysafeGateway::DISPOSITION_CREATED, response.params['TransactionState']
+  end
+    
   private
 
   def successful_authorize_response
@@ -87,5 +73,22 @@ class PaysafeTest < Test::Unit::TestCase
     RESPONSE
   end
   
+  def successful_get_transaction_state_response
+    <<-RESPONSE
+    <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+    <paysafecard:PaysafecardTransaction xmlns:paysafecard="http://www.paysafecard.com/MerchantApi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.paysafecard.com/MerchantApi MerchantApi_v1.xsd">
+      <actionKey>com.psc.pay.GetDispositionStateAction_1272996216356_24.22.29.22</actionKey>
+      <txCode>0</txCode>
+      <txMessage></txMessage>
+      <MID>testid</MID>
+      <MTID>cool-trans</MTID>
+      <Amount>10.00</Amount>
+      <Currency>ARS</Currency>
+      <TransactionState>C</TransactionState>
+      <errCode>0</errCode>
+      <errMessage></errMessage>
+    </paysafecard:PaysafecardTransaction>
+    RESPONSE
+  end
 
 end

@@ -29,4 +29,21 @@ class RemotePaysafeTest < Test::Unit::TestCase
     assert_instance_of Response, response
     assert_failure response
   end
+  
+  def test_successful_get_transaction_status
+    @gateway.authorize(@options)
+    
+    assert response = @gateway.check_transaction_status(@options)
+    assert_instance_of Response, response
+    assert_success response
+    
+    assert_equal PaysafeGateway::DISPOSITION_CREATED, response.params['TransactionState']
+  end
+  
+  def test_failed_get_transaction_status_when_bad_transaction_id
+    assert response = @gateway.check_transaction_status(@options)
+    assert_instance_of Response, response
+    assert_failure response
+  end
+  
 end
