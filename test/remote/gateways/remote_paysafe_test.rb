@@ -46,4 +46,13 @@ class RemotePaysafeTest < Test::Unit::TestCase
     assert_failure response
   end
   
+  def x_test_successful_capture # cannot actually test this w/o manually paying via paysafe customer servlet
+    # authorize
+    # customer adds card to transaction via paysafe iframe (hopefully automated)
+    
+    assert response = @gateway.capture(@options)
+    assert_instance_of Response, response
+    assert_success response
+  end
+  
 end

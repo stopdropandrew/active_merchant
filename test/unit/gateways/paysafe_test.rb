@@ -40,7 +40,23 @@ class PaysafeTest < Test::Unit::TestCase
     
     assert_equal PaysafeGateway::DISPOSITION_CREATED, response.params['TransactionState']
   end
+  
+  def test_successful_capture
+    @gateway.expects(:ssl_post).returns(successful_capture_response)
     
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_success response
+  end
+  
+  def test_successful_capture
+    @gateway.expects(:ssl_post).returns(already_captured_capture_response)
+    
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_failure response
+  end
+  
   private
 
   def successful_authorize_response
@@ -91,4 +107,33 @@ class PaysafeTest < Test::Unit::TestCase
     RESPONSE
   end
 
+  def successful_capture_response
+    <<-RESPONSE
+    <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+    <paysafecard:PaysafecardTransaction xmlns:paysafecard="http://www.paysafecard.com/MerchantApi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.paysafecard.com/MerchantApi MerchantApi_v1.xsd">
+      <actionKey>com.psc.pay.DebitAction_1272997321935_24.22.29.22</actionKey>
+      <txCode>0</txCode>
+      <txMessage></txMessage>
+      <MID>testid</MID>
+      <MTID>cool-trans</MTID>
+      <errCode>0</errCode>
+      <errMessage></errMessage>
+    </paysafecard:PaysafecardTransaction>
+    RESPONSE
+  end
+  
+  def already_captured_capture_response
+    <<-RESPONSE
+    <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+    <paysafecard:PaysafecardTransaction xmlns:paysafecard="http://www.paysafecard.com/MerchantApi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.paysafecard.com/MerchantApi MerchantApi_v1.xsd">
+      <actionKey>com.psc.pay.DebitAction_1272997548988_24.22.29.22</actionKey>
+      <txCode>1</txCode>
+      <txMessage>Transaction (testid/cool-trans) is in invalid state null, expected is null or null.</txMessage>
+      <MID>testid</MID>
+      <MTID>cool-trans</MTID>
+      <errCode>2017</errCode>
+      <errMessage>Transaction (testid/cool-trans) is in invalid state null, expected is null or null.</errMessage>
+    </paysafecard:PaysafecardTransaction>
+    RESPONSE
+  end
 end

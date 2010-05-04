@@ -11,6 +11,9 @@ module ActiveMerchant #:nodoc:
       # real action endpoints
       AUTHORIZE_ACTION = "CreateDispositionServlet"
       CHECK_TRANSACTION_ACTION = "GetDispositionStateServlet"
+      CAPTURE_ACTION = "DebitServlet"
+      
+      # customer endpoints
       
       # disposition statuses
       DISPOSITION_CREATED = 'C'
@@ -40,6 +43,7 @@ module ActiveMerchant #:nodoc:
         add_boilerplate_info(post)
         add_transaction_data(post, options)
         add_purchase_data(post, options)
+        add_ok_urls(post, options)
         
         commit(AUTHORIZE_ACTION, post)
       end
@@ -52,6 +56,16 @@ module ActiveMerchant #:nodoc:
         add_transaction_data(post, options)
         
         commit(CHECK_TRANSACTION_ACTION, post)
+      end
+      
+      def capture(options = {})
+        requires!(options, :transaction_id, :amount)
+        post = { :close => 1 }
+        add_boilerplate_info(post)
+        add_transaction_data(post, options)
+        add_purchase_data(post, options)
+        
+        commit(CAPTURE_ACTION, post)
       end
       
       private
@@ -68,11 +82,14 @@ module ActiveMerchant #:nodoc:
       def add_purchase_data(post, options)
         post[:currency] = @options[:currency]
         post[:amount] = '%.2f' % options[:amount]
-        post[:okurl] = options[:ok_url]
-        post[:nokurl] = options[:nok_url]
         post[:businesstype] = @options[:business_type]
       end
 
+      def add_ok_urls(post, options)
+        post[:okurl] = options[:ok_url]
+        post[:nokurl] = options[:nok_url]
+      end
+      
       def commit(action, parameters)
         response = parse( ssl_post( api_url(action), post_data(parameters) ) )
 
