@@ -2,18 +2,19 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class PaysafeGateway < Gateway
       
-      BASE_URL = "https://shops.%s.at.paysafecard.com/pscmerchant/%s"
       OUTPUT_FORMAT = 'xml_v1'
       
-      # test action endpoints
+      # endpoints
+      BASE_URL = "https://shops.%s.at.paysafecard.com/pscmerchant/%s"
+      CUSTOMER_BASE_URL = "https://customer.%s.at.paysafecard.com/psccustomer/GetCustomerPanelServlet"      
+      
+      # test actions
       INITIALIZE_TEST_ACTION = 'InitializeMerchantTestDataServlet'
 
-      # real action endpoints
+      # real actions
       AUTHORIZE_ACTION = "CreateDispositionServlet"
       CHECK_TRANSACTION_ACTION = "GetDispositionStateServlet"
       CAPTURE_ACTION = "DebitServlet"
-      
-      # customer endpoints
       
       # disposition statuses
       DISPOSITION_CREATED = 'C'
@@ -104,21 +105,23 @@ module ActiveMerchant #:nodoc:
       end
 
       def parse(xml)
-        puts xml
-        
         doc = REXML::Document.new(xml)
         hash = doc.root.elements.inject(nil, {}) do |a, node|
           a[node.name] = node.text
           a
         end
         
-        puts hash.inspect
         hash
       end
 
       def api_url(action)
         merchant_id = test? ? 'test' : options[:merchant_id]
         BASE_URL % [ merchant_id, action ]
+      end
+
+      def customer_url
+        merchant_id = test? ? 'test' : options[:merchant_id]
+        CUSTOMER_BASE_URL % merchant_id
       end
 
     end
