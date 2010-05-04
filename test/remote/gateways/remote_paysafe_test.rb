@@ -6,6 +6,8 @@ class RemotePaysafeTest < Test::Unit::TestCase
   def setup
     @gateway = PaysafeGateway.new(fixtures(:paysafe))
 
+    @gateway.initialize_merchant_data
+
     @options = { 
       :currency => 'EUR',
       :transaction_id => 'cool-trans',
@@ -15,7 +17,16 @@ class RemotePaysafeTest < Test::Unit::TestCase
     }
   end
   
-  def test_get_response
-    assert @gateway.authorize(@options)
+  def test_successful_authorize
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_success response
+  end
+
+  def test_duplicate_transaction_id_authorize
+    @gateway.authorize(@options)
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_failure response
   end
 end

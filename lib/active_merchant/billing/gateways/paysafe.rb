@@ -5,6 +5,7 @@ module ActiveMerchant #:nodoc:
       BASE_URL = "https://shops.%s.at.paysafecard.com/pscmerchant/%s"
       OUTPUT_FORMAT = 'xml_v1'
       
+      INITIALIZE_TEST_ACTION = 'InitializeMerchantTestDataServlet'
       AUTHORIZE_ACTION = "CreateDispositionServlet"
       
       def initialize(options = {})
@@ -14,6 +15,13 @@ module ActiveMerchant #:nodoc:
         @options[:ca_file] = File.dirname(__FILE__) + '/../../../certs/paysafecard-CA.pem'
         
         super
+      end
+      
+      def initialize_merchant_data
+        raise StandardError, "Can only initialize merchant test data in test mode" unless test?
+        post = {}
+        add_boilerplate_info(post)
+        commit(INITIALIZE_TEST_ACTION, post)
       end
       
       def authorize(options = {})
@@ -29,16 +37,16 @@ module ActiveMerchant #:nodoc:
 
       def add_boilerplate_info(post)
         post[:mid] = @options[:merchant_id]
-        post[:currency] = @options[:currency]
-        post[:businesstype] = @options[:business_type]
         post[:outputFormat] = OUTPUT_FORMAT
       end
 
       def add_transaction_data(post, options)
+        post[:currency] = @options[:currency]
         post[:mtid] = options[:transaction_id]
         post[:amount] = '%.2f' % options[:amount]
         post[:okurl] = options[:ok_url]
         post[:nokurl] = options[:nok_url]
+        post[:businesstype] = @options[:business_type]
       end
 
       def commit(action, parameters)

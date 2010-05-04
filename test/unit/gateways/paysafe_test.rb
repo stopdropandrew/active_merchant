@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.join(File.dirname(__FILE__), '..', '..', 'test_helper')
 
 class PaysafeTest < Test::Unit::TestCase
   def setup
@@ -7,7 +7,7 @@ class PaysafeTest < Test::Unit::TestCase
     @options = { 
       :currency => 'EUR',
       :transaction_id => 'cool-trans',
-      :amount => 10,
+      :amount => 20,
       :ok_url => 'http://www.kongregate.com/paysafe?ok=true',
       :nok_url => 'http://www.kongregate.com/paysafe?ok=false'
     }
@@ -20,6 +20,25 @@ class PaysafeTest < Test::Unit::TestCase
     assert_instance_of Response, response
     assert_success response
   end
+  
+  def test_authorizing_duplicate_transaction_id_fails
+    @gateway.expects(:ssl_post).returns(failed_authorize_response)
+    
+    assert response = @gateway.authorize(@options)
+    assert_instance_of Response, response
+    assert_failure response
+    assert_equal '2001', response.params['errCode']
+    assert_equal 'The Transaction <testid, cool-trans> already exists.', response.message
+  end
+  
+  # def test_get_transaction_state
+  #   @gateway.expects(:ssl_post).returns(successful_authorize_response)
+  #   
+  #   assert response = @gateway.authorize(@options)
+  #   assert_instance_of Response, response
+  #   assert_success response
+  #   
+  # end
   
   # def test_successful_authorize
   #   @gateway.expects(:ssl_post).returns(successful_authorize_response)
@@ -37,8 +56,7 @@ class PaysafeTest < Test::Unit::TestCase
   
   
   private
-  # 
-  # # Place raw successful response from gateway here
+
   def successful_authorize_response
     <<-RESPONSE
     <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
@@ -46,21 +64,28 @@ class PaysafeTest < Test::Unit::TestCase
       <actionKey>com.psc.pay.CreateDispositionAction_1272988103184_24.22.29.22</actionKey>
       <txCode>0</txCode>
       <txMessage></txMessage>
-      <MID>1060000037</MID>
+      <MID>testid</MID>
       <MTID>cool-trans</MTID>
       <errCode>0</errCode>
       <errMessage></errMessage>
     </paysafecard:PaysafecardTransaction>
     RESPONSE
   end
-  # 
-  # # Place raw failed response from gateway here
-  # def failed_response
-  #   <<-RESPONSE
-  #   <?xml version="1.0" encoding="UTF-8"?>
-  #   <responseMobilePaymentProcessEntrypoints xmlns="http://pay01.zong.com/zongpay" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pay01.zong.com/zongpay/zongpay.xsd"><countryCode>IQ</countryCode></responseMobilePaymentProcessEntrypoints>
-  #   RESPONSE
-  # end
-  # 
+  
+  def failed_authorize_response
+    <<-RESPONSE
+    <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+    <paysafecard:PaysafecardTransaction xmlns:paysafecard="http://www.paysafecard.com/MerchantApi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.paysafecard.com/MerchantApi MerchantApi_v1.xsd">
+      <actionKey>com.psc.pay.CreateDispositionAction_1272991664088_24.22.29.22</actionKey>
+      <txCode>1</txCode>
+      <txMessage>The Transaction &lt;testid, cool-trans&gt; already exists.</txMessage>
+      <MID>testid</MID>
+      <MTID>cool-trans</MTID>
+      <errCode>2001</errCode>
+      <errMessage>The Transaction &lt;testid, cool-trans&gt; already exists.</errMessage>
+    </paysafecard:PaysafecardTransaction>
+    RESPONSE
+  end
+  
 
 end
