@@ -362,3 +362,12 @@ ultimatepay_ugc:
   password: password
   secret_phrase: secret
   valid_pin: valid_pin_here
+
+paysafe:
+  merchant_id: your-merchant-id
+  business_type: I # change this if you want
+  currency: ARS # your test currency
+  pem_password: secret
+  pem: |--
+    PASTE YOUR PEM FILE HERE
+
