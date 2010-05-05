@@ -1,15 +1,9 @@
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
-    class BogusPaysafeGateway < Gateway
+    class BogusPaysafeGateway < PaysafeGateway
       GUID_CREATED = 'created-guid'
       GUID_DISPOSED = 'disposed-guid'
       GUID_EXPIRED = 'expired-guid'
-      
-      def initialize(options = {})
-        requires!(options, :merchant_id, :currency, :business_type)
-        @options = options
-        super
-      end 
       
       def authorize(options = {})
         requires!(options, :transaction_id, :amount, :ok_url, :nok_url)

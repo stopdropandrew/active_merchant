@@ -69,6 +69,18 @@ module ActiveMerchant #:nodoc:
         commit(CAPTURE_ACTION, post)
       end
       
+      def customer_iframe_url(options = {})
+        requires!(options, :transaction_id, :amount)
+        base_url = customer_url
+        
+        params = {}
+        add_boilerplate_info(params)
+        add_transaction_data(params, options)
+        add_purchase_data(params, options)
+        
+        base_url + '?' + params.to_query
+      end
+      
       private
 
       def add_boilerplate_info(post)
