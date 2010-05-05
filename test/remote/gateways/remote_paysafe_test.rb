@@ -9,7 +9,6 @@ class RemotePaysafeTest < Test::Unit::TestCase
     @gateway.initialize_merchant_data
 
     @options = { 
-      :currency => 'EUR',
       :transaction_id => 'cool-trans',
       :amount => 10,
       :ok_url => 'http://www.kongregate.com/paysafe?ok=true',
