@@ -69,6 +69,19 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     assert response.test?
   end
 
+  def test_small_panel_url
+    assert url = @gateway.small_panel_url(
+      :merchtrans => 'guid',
+      :user_id => 4,
+      :username => 'andrew',
+      :amount => '20.00',
+      :currency => 'USD',
+      :complete_url => 'http://www.alldone.com'
+    )
+    assert_equal 0, url.index('https://')
+    assert url.index('hash='), "Hash should be included in URL"
+  end
+
   private
   
   def successful_authorize_response

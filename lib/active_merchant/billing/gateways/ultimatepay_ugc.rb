@@ -2,7 +2,7 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class UltimatepayUgcGateway < Gateway
       # we'll use the live url for tests until they get a real test gateway
-      TEST_URL = 'https://www.ultimatepay.com/app/api/live/'
+      TEST_URL = 'https://www.ultimatepay.com/app/api/test/'
       LIVE_URL = 'https://www.ultimatepay.com/app/api/live/'
       
       AUTHORIZE_METHOD = 'StartOrderDirect'
@@ -45,12 +45,32 @@ module ActiveMerchant #:nodoc:
         commit(CAPTURE_METHOD, post)
       end
 
+      def small_panel_url(options = {})
+        requires!(options, :merchtrans, :amount, :currency, :user_id, :username, :complete_url)
+        
+        params = {}
+        add_merchant_code(params)
+        add_merchtrans(params, options)
+        add_amount(params, options)
+        add_customer_data(params, options)
+        params[:completeurl] = options[:complete_url]
+        params[:method] = 'StartOrderFrontEnd'
+        params[:display] = 'SmallPanel'
+        add_hash(params)
+
+        "#{gateway_url}?#{params.to_query}"
+      end
+
       private
       
       def add_boilerplate_info(post, options)
-        post[:sn] = @options[:merchant_code]
+        add_merchant_code(post)
         post[:paymentid] = 'UG'
         post[:ugc_pin] = options[:ugc_pin]
+      end
+      
+      def add_merchant_code(post)
+        post[:sn] = @options[:merchant_code]
       end
 
       def add_merchtrans(post, options)
@@ -91,7 +111,7 @@ module ActiveMerchant #:nodoc:
       def commit(method, parameters)
         parameters[:method] = method
         
-        response = parse( ssl_post(gateway_url, post_data(parameters) ) )
+        response = parse( ssl_post(LIVE_URL, post_data(parameters) ) )
 
         success = case method
         when AUTHORIZE_METHOD
