@@ -75,20 +75,31 @@ module ActiveMerchant #:nodoc:
         
         return {} unless items # early exit if no items, country code not found
         item_array = []
-        
         items.each_element do |item|
           entry_point_url = item.elements['entrypointUrl'].text
           item_array << { :working_price => item.attributes['workingPrice'].to_f, 
                           :out_payment => item.attributes['outPayment'].to_f, 
                           :item_ref  => item.attributes['itemRef'], 
                           :zong_plus_only => item.attributes['zongPlusOnly'] == 'true', 
-                          :entrypoint_url => entry_point_url
+                          :entrypoint_url => entry_point_url,
+                          :supported_providers => extract_supported_providers(item)
                         }
         end
         
         response[:items] = item_array
         response
-      end     
+      end
+      
+      def extract_supported_providers(item)
+        supported_providers_ele = item.elements['supportedProviders']
+        return 'all' if supported_providers_ele.nil? || supported_providers_ele.attributes['all']
+        
+        provider_names = []
+        supported_providers_ele.each_element do |provider|
+          provider_names << provider.attributes['name']
+        end
+        provider_names
+      end
       
      end
   end
