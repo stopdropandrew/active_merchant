@@ -96,6 +96,7 @@ module ActiveMerchant #:nodoc:
         post[:currency] = @options[:currency]
         post[:amount] = '%.2f' % options[:amount]
         post[:businesstype] = @options[:business_type]
+        post[:reportingcriteria] = options[:reportingcriteria]
       end
 
       def add_ok_urls(post, options)
