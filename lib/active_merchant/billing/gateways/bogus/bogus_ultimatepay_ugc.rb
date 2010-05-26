@@ -1,6 +1,6 @@
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
-    class BogusUltimatepayUgcGateway < Gateway
+    class BogusUltimatepayUgcGateway < UltimatepayUgcGateway
       def initialize(options = {})
         requires!(options, :merchant_code, :password, :secret_phrase, :login)
         @options = options
