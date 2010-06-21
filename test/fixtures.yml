@@ -135,10 +135,11 @@ paypal_certificate:
   pem: |--
     PASTE YOUR PEM FILE HERE
 
+# test credentials from the PayPal docs (for NVP anyway)... fine to leave in here
 paypal_signature:
-  login: LOGIN
-  password: PASSWORD
-  signature: SIGNATURE
+  login: sdk-three_api1.sdk.com
+  password: QFZCWN5HZM8VBG7Q
+  signature: A-IzJhZZjhg29XQ2qnhapuwxIDzyAZQ92FRP5dqBzVesOkzbdUONzmOU
 
 pay_secure:
   login: LOGIN
