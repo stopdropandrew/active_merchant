@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/paypal_nv/paypal_nv_common_api'
 require File.dirname(__FILE__) + '/paypal_express_nv'
 
+# This was fished out of a really old version of ActiveMerchant and should 
+# be used ONLY for purchase_from_reference_transaction calls!
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class PaypalNvGateway < Gateway

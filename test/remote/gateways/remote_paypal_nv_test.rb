@@ -62,6 +62,11 @@ class PaypalNvTest < Test::Unit::TestCase
     assert_success response
   end
   
+  def test_failed_reference_transaction
+    response = @gateway.purchase_from_reference_transaction('bogus_reference_id', 500)
+    assert_failure response
+  end
+
   def test_successful_purchase_in_cad
     @options[:currency] = 'CAD'
     
