@@ -1,4 +1,3 @@
-# TODO copy me into the active_mechant project!
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class BogusPaypalGateway < Gateway
@@ -11,7 +10,7 @@ module ActiveMerchant #:nodoc:
       def purchase_response
         Response.new(true, '', purchase_results_params, :test => true, :authorization => purchase_results_params['transaction_id'])
       end
-      
+
       def purchase_results_params
         {
           "timestamp"=>"2010-07-01T00:04:18Z",
@@ -39,6 +38,25 @@ module ActiveMerchant #:nodoc:
           "protection_eligibility"=>"Ineligible"
         }
       end
+
+      def failed_response
+        Response.new(false, '', failure_results, :test => true, :authorization => nil)
+      end
+      
+      def failure_results
+        {
+          "timestamp"=>"2010-06-22T23:59:50Z", 
+          "correlationid"=>"f006605c4f64", 
+          "ack"=>"Failure", 
+          "version"=>"50.0000", 
+          "build"=>"1364891", 
+          "l_errorcode0"=>"11451", 
+          "l_shortmessage0"=>"Billing Agreement Id or transaction Id is not valid", 
+          "l_longmessage0"=>"Billing Agreement Id or transaction Id is not valid", 
+          "l_severitycode0"=>"Error"
+        }
+      end
+      
     end
   end
 end

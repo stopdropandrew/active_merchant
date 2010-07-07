@@ -1,10 +1,8 @@
 require File.join(File.dirname(__FILE__), '../paypal/paypal_express_response')
 
-# TODO copy me into the active_mechant project!
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class BogusPaypalExpressGateway < Gateway
-      attr_accessor :fail_requests
       TEST_REDIRECT_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token='
       SETUP_TOKEN = "EC-09U03228KE464884V"
       
@@ -28,20 +26,6 @@ module ActiveMerchant #:nodoc:
         PaypalExpressResponse.new(true, '', setup_results, :test => true, :authorization => nil)
       end
       
-      def failure_results
-        {
-          "timestamp"=>"2010-06-22T23:59:50Z", 
-          "correlationid"=>"f006605c4f64", 
-          "ack"=>"Failure", 
-          "version"=>"50.0000", 
-          "build"=>"1364891", 
-          "l_errorcode0"=>"11451", 
-          "l_shortmessage0"=>"Billing Agreement Id or transaction Id is not valid", 
-          "l_longmessage0"=>"Billing Agreement Id or transaction Id is not valid", 
-          "l_severitycode0"=>"Error"
-        }
-      end
-
       def setup_results
         {
           "timestamp"=>"2010-06-29T00:02:10Z", 
