@@ -97,6 +97,13 @@ module ActiveMerchant #:nodoc:
               if options[:max_amount]
                 xml.tag! 'n2:MaxAmount', amount(options[:max_amount]), 'currencyID' => options[:currency] || currency(options[:max_amount])
               end
+              # Kongregate customization to indicate user wants to set up Billing Agreement for Reference Txns
+              if options[:initiate_billing_agreement]
+                xml.tag! 'n2:BillingAgreementDetails' do
+                  xml.tag! 'n2:BillingType', 'MerchantInitiatedBilling'
+                end
+              end
+              
               add_address(xml, 'n2:Address', options[:shipping_address] || options[:address])
               xml.tag! 'n2:AddressOverride', options[:address_override] ? '1' : '0'
               xml.tag! 'n2:NoShipping', options[:no_shipping] ? '1' : '0'
@@ -118,7 +125,6 @@ module ActiveMerchant #:nodoc:
             end
           end
         end
-
         xml.target!
       end
       
