@@ -21,7 +21,7 @@ module ActiveMerchant #:nodoc:
         commit define_transaction_type(credit_card_or_referenced_id), build_sale_or_authorization_request('Sale', money, credit_card_or_referenced_id, options)
       end
       
-      def get_details_for(transaction_id, options = {})
+      def details_for(transaction_id, options = {})
         req = build_get_details_request(transaction_id)
         commit 'GetTransactionDetails', req
       end

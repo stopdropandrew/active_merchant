@@ -59,7 +59,7 @@ class PaypalTest < Test::Unit::TestCase
   
   def test_successful_get_transaction_details_request
     @gateway.expects(:ssl_post).returns(get_transaction_details_response)
-    assert response = @gateway.get_details_for('1MF238554B483831A', @options)
+    assert response = @gateway.details_for('1MF238554B483831A', @options)
     assert_instance_of Response, response
     assert_success response
     assert_equal "19.99", response.params['gross_amount']
