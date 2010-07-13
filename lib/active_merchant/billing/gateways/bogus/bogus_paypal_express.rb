@@ -109,7 +109,8 @@ module ActiveMerchant #:nodoc:
           "payment_status"=>"Pending",
           "pending_reason"=>"payment-review",
           "reason_code"=>"none",
-          "protection_eligibility"=>"Ineligible"
+          "protection_eligibility"=>"Ineligible",
+          "billing_agreement_id"=>"ABASJD21323SJS"
         }
       end
     end
