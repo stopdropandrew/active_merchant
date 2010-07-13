@@ -21,6 +21,11 @@ module ActiveMerchant #:nodoc:
         commit define_transaction_type(credit_card_or_referenced_id), build_sale_or_authorization_request('Sale', money, credit_card_or_referenced_id, options)
       end
       
+      def get_details_for(transaction_id, options = {})
+        req = build_get_details_request(transaction_id)
+        commit 'GetTransactionDetails', req
+      end
+      
       def express
         @express ||= PaypalExpressGateway.new(@options)
       end
@@ -100,6 +105,18 @@ module ActiveMerchant #:nodoc:
             add_address(xml, 'n2:Address', address)
           end
         end
+      end
+      
+      def build_get_details_request(transaction_id)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'GetTransactionDetailsReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'GetTransactionDetailsRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'TransactionID', transaction_id
+          end
+        end
+
+        xml.target!
       end
 
       def credit_card_type(type)

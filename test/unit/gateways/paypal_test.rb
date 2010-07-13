@@ -57,6 +57,16 @@ class PaypalTest < Test::Unit::TestCase
     assert response.test?
   end
   
+  def test_successful_get_transaction_details_request
+    @gateway.expects(:ssl_post).returns(get_transaction_details_response)
+    assert response = @gateway.get_details_for('1MF238554B483831A', @options)
+    assert_instance_of Response, response
+    assert_success response
+    assert_equal "19.99", response.params['gross_amount']
+    assert_equal "test@paypal.com", response.params['payer']
+    assert_equal "United States", response.params['country_name']
+  end
+  
   def test_reauthorization
     @gateway.expects(:ssl_post).returns(successful_reauthorization_response)
     response = @gateway.reauthorize(@amount, '32J876265E528623B')
@@ -564,6 +574,111 @@ class PaypalTest < Test::Unit::TestCase
     </DoDirectPaymentResponse>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
+    RESPONSE
+  end
+  
+  def get_transaction_details_response
+    <<-RESPONSE
+    <?xml version="1.0" encoding="UTF-8"?>
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cc="urn:ebay:apis:CoreComponentTypes" xmlns:ed="urn:ebay:apis:EnhancedDataTypes" xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:wsse="http://schemas.xmlsoap.org/ws/2002/12/secext" xmlns:ebl="urn:ebay:apis:eBLBaseComponents" xmlns:ns="urn:ebay:api:PayPalAPI">
+    	<SOAP-ENV:Header>
+    		<Security xmlns="http://schemas.xmlsoap.org/ws/2002/12/secext" xsi:type="wsse:SecurityType"></Security>
+    		<RequesterCredentials xmlns="urn:ebay:api:PayPalAPI" xsi:type="ebl:CustomSecurityHeaderType">
+    			<Credentials xmlns="urn:ebay:apis:eBLBaseComponents" xsi:type="ebl:UserIdPasswordType">
+    				<Username xsi:type="xs:string"></Username>
+    				<Password xsi:type="xs:string"></Password>
+    				<Signature xsi:type="xs:string">xxxx</Signature>
+    				<Subject xsi:type="xs:string"></Subject>
+    			</Credentials>
+    		</RequesterCredentials>
+    	</SOAP-ENV:Header>
+    	<SOAP-ENV:Body id="_0">
+    		<GetTransactionDetailsResponse xmlns="urn:ebay:api:PayPalAPI">
+    			<Timestamp xmlns="urn:ebay:apis:eBLBaseComponents">2010-07-12T17:18:45Z</Timestamp>
+    			<Ack xmlns="urn:ebay:apis:eBLBaseComponents">Success</Ack>
+    			<CorrelationID xmlns="urn:ebay:apis:eBLBaseComponents">9f0160bdc8de5</CorrelationID>
+    			<Version xmlns="urn:ebay:apis:eBLBaseComponents">61.0</Version>
+    			<Build xmlns="urn:ebay:apis:eBLBaseComponents">1362829</Build>
+    			<PaymentTransactionDetails xmlns="urn:ebay:apis:eBLBaseComponents" xsi:type="ebl:PaymentTransactionType">
+    				<ReceiverInfo xsi:type="ebl:ReceiverInfoType">
+    					<Business xsi:type="ebl:EmailAddressType">test@paypal.com</Business>
+    					<Receiver xsi:type="ebl:EmailAddressType">test@paypal.com</Receiver>
+    					<ReceiverID xsi:type="ebl:UserIDType">FRXP8Y6459ADL</ReceiverID>
+    				</ReceiverInfo>
+    				<PayerInfo xsi:type="ebl:PayerInfoType">
+    					<Payer xsi:type="ebl:EmailAddressType">test@paypal.com</Payer>
+    					<PayerID xsi:type="ebl:UserIDType">E7AN983DT7HKN</PayerID>
+    					<PayerStatus xsi:type="ebl:PayPalUserStatusCodeType">verified</PayerStatus>
+    					<PayerName xsi:type="ebl:PersonNameType">
+    						<Salutation xmlns="urn:ebay:apis:eBLBaseComponents"></Salutation>
+    						<FirstName xmlns="urn:ebay:apis:eBLBaseComponents">Joe</FirstName>
+    						<MiddleName xmlns="urn:ebay:apis:eBLBaseComponents"></MiddleName>
+    						<LastName xmlns="urn:ebay:apis:eBLBaseComponents">Blow</LastName>
+    						<Suffix xmlns="urn:ebay:apis:eBLBaseComponents"></Suffix>
+    					</PayerName>
+    					<PayerCountry xsi:type="ebl:CountryCodeType">US</PayerCountry>
+    					<PayerBusiness xsi:type="xs:string">Army Surplus Oatmeal</PayerBusiness>
+    					<Address xsi:type="ebl:AddressType">
+    						<Name xsi:type="xs:string"></Name>
+    						<Street1 xsi:type="xs:string"></Street1>
+    						<Street2 xsi:type="xs:string"></Street2>
+    						<CityName xsi:type="xs:string"></CityName>
+    						<StateOrProvince xsi:type="xs:string"></StateOrProvince>
+    						<CountryName>United States</CountryName>
+    						<PostalCode xsi:type="xs:string"></PostalCode>
+    						<AddressOwner xsi:type="ebl:AddressOwnerCodeType">PayPal</AddressOwner>
+    						<AddressStatus xsi:type="ebl:AddressStatusCodeType">Unconfirmed</AddressStatus>
+    					</Address>
+    					<ContactPhone xsi:type="xs:string"></ContactPhone>
+    				</PayerInfo>
+    				<PaymentInfo xsi:type="ebl:PaymentInfoType">
+    					<TransactionID>1MF238554B483831A</TransactionID>
+    					<ParentTransactionID xsi:type="ebl:TransactionId"></ParentTransactionID>
+    					<ReceiptID></ReceiptID>
+    					<TransactionType xsi:type="ebl:PaymentTransactionCodeType">mercht-pmt</TransactionType>
+    					<PaymentType xsi:type="ebl:PaymentCodeType">instant</PaymentType>
+    					<PaymentDate xsi:type="xs:dateTime">2010-07-12T17:11:46Z</PaymentDate>
+    					<GrossAmount xsi:type="cc:BasicAmountType" currencyID="USD">19.99</GrossAmount>
+    					<FeeAmount xsi:type="cc:BasicAmountType" currencyID="USD">0.68</FeeAmount>
+    					<TaxAmount xsi:type="cc:BasicAmountType" currencyID="USD">0.00</TaxAmount>
+    					<ExchangeRate xsi:type="xs:string"></ExchangeRate>
+    					<PaymentStatus xsi:type="ebl:PaymentStatusCodeType">Completed</PaymentStatus>
+    					<PendingReason xsi:type="ebl:PendingStatusCodeType">none</PendingReason>
+    					<ReasonCode xsi:type="ebl:ReversalReasonCodeType">none</ReasonCode>
+    					<ProtectionEligibility xsi:type="xs:string">Ineligible</ProtectionEligibility>
+    					<ShipAmount xsi:type="xs:string">0.00</ShipAmount>
+    					<ShipHandleAmount xsi:type="xs:string">0.00</ShipHandleAmount>
+    					<ShipDiscount xsi:type="xs:string"></ShipDiscount>
+    					<InsuranceAmount xsi:type="xs:string"></InsuranceAmount>
+    					<Subject xsi:type="xs:string"></Subject>
+    				</PaymentInfo>
+    				<PaymentItemInfo xsi:type="ebl:PaymentItemInfoType">
+    					<InvoiceID xsi:type="xs:string"></InvoiceID>
+    					<Custom xsi:type="xs:string"></Custom>
+    					<Memo xsi:type="xs:string"></Memo>
+    					<SalesTax xsi:type="xs:string">0.00</SalesTax>
+    					<PaymentItem xmlns="urn:ebay:apis:eBLBaseComponents" xsi:type="ebl:PaymentItemType">
+    						<Name xsi:type="xs:string"></Name>
+    						<Number xsi:type="xs:string"></Number>
+    						<Quantity xsi:type="xs:string">1</Quantity>
+    						<SalesTax xsi:type="xs:string">0.00</SalesTax>
+    						<ShippingAmount xsi:type="xs:string"></ShippingAmount>
+    						<HandlingAmount xsi:type="xs:string"></HandlingAmount>
+    					</PaymentItem>
+    					<Subscription xsi:type="ebl:SubscriptionInfoType" recurring="" reattempt="">
+    						<SubscriptionID></SubscriptionID>
+    						<Username xsi:type="xs:string"></Username>
+    						<Password xsi:type="xs:string"></Password>
+    						<Recurrences xsi:type="xs:string"></Recurrences>
+    					</Subscription>
+    					<Auction xsi:type="ebl:AuctionInfoType" multiItem="">
+    						<BuyerID xsi:type="xs:string"></BuyerID>
+    					</Auction>
+    				</PaymentItemInfo>
+    			</PaymentTransactionDetails>
+    		</GetTransactionDetailsResponse>
+    	</SOAP-ENV:Body>
+    </SOAP-ENV:Envelope>
     RESPONSE
   end
 end
