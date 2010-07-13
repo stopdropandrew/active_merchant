@@ -91,11 +91,19 @@ module ActiveMerchant
     end
     
     private
+    
+    has_test_unit_implementation = defined?(Test::Unit::TEST_UNIT_IMPLEMENTATION)
+    if has_test_unit_implementation && Test::Unit::TEST_UNIT_IMPLEMENTATION =~ /minitest/
+      Fail = MiniTest::Assertion
+    else
+      Fail = Test::Unit::AssertionFailedError
+    end
+    
     def clean_backtrace(&block)
       yield
-    rescue Test::Unit::AssertionFailedError => e
+    rescue Fail => e
       path = File.expand_path(__FILE__)
-      raise Test::Unit::AssertionFailedError, e.message, e.backtrace.reject { |line| File.expand_path(line) =~ /#{path}/ }
+      raise Fail, e.message, e.backtrace.reject { |line| File.expand_path(line) =~ /#{path}/ }
     end
   end
   
