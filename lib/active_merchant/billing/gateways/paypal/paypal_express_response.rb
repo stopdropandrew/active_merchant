@@ -33,6 +33,14 @@ module ActiveMerchant #:nodoc:
            'phone'      => nil
         }
       end
+      
+      def complete?
+        'Completed' == @params['payment_status']
+      end
+
+      def pending?
+        'Pending' == @params['payment_status']
+      end
     end
   end
 end

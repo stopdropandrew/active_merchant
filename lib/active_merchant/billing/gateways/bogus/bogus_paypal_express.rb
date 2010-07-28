@@ -10,7 +10,7 @@ module ActiveMerchant #:nodoc:
         setup_purchase_response
       end
       
-      def redirect_url_for(token)
+      def redirect_url_for(token, options = {})
         TEST_REDIRECT_URL + token
       end
       
@@ -24,6 +24,20 @@ module ActiveMerchant #:nodoc:
       
       def setup_purchase_response
         PaypalExpressResponse.new(true, '', setup_results, :test => true, :authorization => nil)
+      end
+      
+      def with_pending_response
+        @do_pending = true
+        yield
+        @do_pending = false
+      end
+      
+      def paypal_email
+        details_results['payer']
+      end
+      
+      def country_name
+        details_results['country_name']
       end
       
       def setup_results
@@ -106,8 +120,8 @@ module ActiveMerchant #:nodoc:
           "tax_amount"=>"0.00",
           "tax_amount_currency_id"=>"USD",
           "exchange_rate"=>nil,
-          "payment_status"=>"Pending",
-          "pending_reason"=>"payment-review",
+          "payment_status"=> (@do_pending ? "Pending" : "Completed"),
+          "pending_reason"=> (@do_pending ? "payment-review" : "none"),
           "reason_code"=>"none",
           "protection_eligibility"=>"Ineligible",
           "billing_agreement_id"=>"ABASJD21323SJS"
