@@ -138,12 +138,16 @@ module ActiveMerchant #:nodoc:
         results
       end
       
-      def message_from(response)
-        case response
-        when 'ugc_pin'
-          'Invalid pin'
-        when 'token'
-          'Invalid token'
+      def message_from(error_message)
+        unless error_message.nil?
+          case error_message
+          when 'ugc_pin'
+            'Invalid pin'
+          when 'token'
+            'Invalid token'
+          else  # trying to avoid issue in 4400108
+            error_message
+          end
         end
       end
       
