@@ -120,7 +120,7 @@ module ActiveMerchant #:nodoc:
           response['result'] == CAPTURE_SUCCESS
         end
         
-        Response.new(success, message_from(response['errorDetail']), response, 
+        Response.new(success, message_from(success, response['errorDetail']), response, 
           :authorization => response["token"],
           :test => test?
         )
@@ -138,16 +138,15 @@ module ActiveMerchant #:nodoc:
         results
       end
       
-      def message_from(error_message)
-        unless error_message.nil?
-          case error_message
-          when 'ugc_pin'
-            'Invalid pin'
-          when 'token'
-            'Invalid token'
-          else  # trying to avoid issue in 4400108
-            error_message
-          end
+      def message_from(success, error_message)
+        return nil if success
+        case error_message
+        when 'ugc_pin'
+          'Invalid pin'
+        when 'token'
+          'Invalid token'
+        else
+          "Unknown error: #{error_message}"
         end
       end
       
