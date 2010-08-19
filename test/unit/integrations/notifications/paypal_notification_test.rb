@@ -77,6 +77,11 @@ class PaypalNotificationTest < Test::Unit::TestCase
     assert !@paypal.acknowledge
   end
   
+  def test_cancel_billing_agreement_notification
+    notification = Paypal::Notification.new('txn_type=mp_cancel')
+    assert notification.cancel_billing_agreement?
+  end
+  
   private
 
   def http_raw_data

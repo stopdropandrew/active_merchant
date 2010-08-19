@@ -48,6 +48,12 @@ module ActiveMerchant #:nodoc:
           def complete?
             status == "Completed"
           end
+          
+          # Is this a notification of a canceled billing agreement?
+          # (txn_type=mp_cancel and mp_id=billing agreement id)
+          def cancel_billing_agreement?
+            type == "mp_cancel"
+          end
 
           # When was this payment received by the client. 
           # sometimes it can happen that we get the notification much later. 
