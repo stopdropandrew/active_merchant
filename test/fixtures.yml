@@ -135,7 +135,7 @@ paypal_certificate:
   pem: |--
     PASTE YOUR PEM FILE HERE
 
-# test credentials from the PayPal docs (for NVP anyway)... fine to leave in here
+# Paypal sandbox api credentials; fine to leave in here
 paypal_signature:
   login: sdk-three_api1.sdk.com
   password: QFZCWN5HZM8VBG7Q
@@ -359,6 +359,7 @@ zong:
   
 ultimatepay_ugc:
   merchant_code: merc
+  pbc_merchant_code: merp
   login: login
   password: password
   secret_phrase: secret

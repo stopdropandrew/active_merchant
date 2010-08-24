@@ -6,6 +6,10 @@ class RemoteUltimatepayUgcTest < Test::Unit::TestCase
     
     options = {
       :user_id => 1,
+      :username => 'foo',
+      :currency => 'USD',
+      :merchtrans => 'abc123',
+      :amount => 2
     }
     
     @success_pin = options.merge( :ugc_pin => fixtures(:ultimatepay_ugc)[:valid_pin] )
@@ -21,7 +25,7 @@ class RemoteUltimatepayUgcTest < Test::Unit::TestCase
   def test_unsuccessful_authorize
     assert response = @gateway.authorize(@failure_pin)
     assert_failure response
-    assert_equal 'Invalid pin', response.message
+    assert_equal 'Unknown error: ', response.message
   end
 
   def x_test_successful_capture

@@ -4,6 +4,7 @@ class UltimatepayUgcTest < Test::Unit::TestCase
   def setup
     @gateway = UltimatepayUgcGateway.new(
                  :merchant_code => 'UC04',
+                 :pbc_merchant_code => 'XYZ1',
                  :login => 'login',
                  :password => 'password',
                  :secret_phrase => '5ebe2294ecd0e0f08eab7690d2a6ee69'
@@ -67,19 +68,6 @@ class UltimatepayUgcTest < Test::Unit::TestCase
     assert_instance_of Response, response
     assert_failure response
     assert response.test?
-  end
-
-  def test_small_panel_url
-    assert url = @gateway.small_panel_url(
-      :merchtrans => 'guid',
-      :user_id => 4,
-      :username => 'andrew',
-      :amount => '20.00',
-      :currency => 'USD',
-      :complete_url => 'http://www.alldone.com'
-    )
-    assert_equal 0, url.index('https://')
-    assert url.index('hash='), "Hash should be included in URL"
   end
 
   private

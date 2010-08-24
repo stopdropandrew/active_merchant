@@ -2,8 +2,14 @@ module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class UltimatepayUgcGateway < Gateway
       # we'll use the live url for tests until they get a real test gateway
+      # used for UGC api call
       TEST_URL = 'https://www.ultimatepay.com/app/api/test/'
       LIVE_URL = 'https://www.ultimatepay.com/app/api/live/'
+
+      # UltimatePay didn't work so we're gonna be trying PayByCash
+      PBC_TEST_URL = 'https://www.paybycash.com/app/api/test/frontend/'
+      PBC_LIVE_URL = 'https://www.paybycash.com/app/api/live/frontend/'
+      
       
       AUTHORIZE_METHOD = 'StartOrderDirect'
       AUTHORIZE_SUCCESS = 'auth'
@@ -19,7 +25,7 @@ module ActiveMerchant #:nodoc:
       self.display_name = 'Ultimatepay UGC Gateway'
       
       def initialize(options = {})
-        requires!(options, :merchant_code, :password, :secret_phrase, :login)
+        requires!(options, :merchant_code, :pbc_merchant_code, :password, :secret_phrase, :login)
         @options = options
         super
       end 
@@ -69,8 +75,9 @@ module ActiveMerchant #:nodoc:
         post[:ugc_pin] = options[:ugc_pin]
       end
       
+      # only used for iframe so uses PBC code
       def add_merchant_code(post)
-        post[:sn] = @options[:merchant_code]
+        post[:sn] = @options[:pbc_merchant_code]
       end
 
       def add_merchtrans(post, options)
@@ -155,7 +162,7 @@ module ActiveMerchant #:nodoc:
       end
       
       def gateway_url
-        test? ? TEST_URL : LIVE_URL
+        test? ? PBC_TEST_URL : PBC_LIVE_URL
       end
       
     end
