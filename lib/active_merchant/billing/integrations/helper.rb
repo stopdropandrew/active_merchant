@@ -12,9 +12,14 @@ module ActiveMerchant #:nodoc:
         # Useful for things like the PayPal build notation (BN) id fields
         class_inheritable_accessor :application_id
         self.application_id = 'ActiveMerchant'
+        
+        attr :api_key
 
         def initialize(order, account, options = {})
-          options.assert_valid_keys([:amount, :currency, :test])
+          options.assert_valid_keys([:amount, :currency, :test, :api_key])
+          
+          @api_key = options[:api_key]
+          
           @fields = {}
           self.order = order
           self.account = account
